@@ -4,14 +4,14 @@
 ;; usage:
 ;;    .../src$ make posix USE_LIBFFI=1
 ;;           $ cd examples
-;;           $ make -f klisp-zmq.makefile
+;;           $ make
 ;;           $ ../klisp klisp-zmq.k
 ;;
 ;; files:
 ;;  klisp-zmq.so ......... interpreter extension compiled to a DLL
 ;;  klisp-zmq.k .......... example of client code
 ;;  klisp-zmq.c  ......... C source of the extension
-;;  klisp-zmq.makefile ... build script
+;;  Makefile ............. build script
 ;;
 
 (ffi-load-library "libzmq.so")

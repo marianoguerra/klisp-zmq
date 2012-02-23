@@ -1,5 +1,5 @@
 #
-# klisp-zmq.makefile
+# klisp-zmq Makefile
 #
 # Build script for klisp-zmq.so. Please follow instructions
 # in klisp-zmq.k.
