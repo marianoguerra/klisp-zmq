@@ -10,20 +10,37 @@ programming language.
 the bindings are really low level and the idea is to map almost directly to
 the C API. 
 
-A higher level api may come on the future on top of this implementation.
+A higher level api may come in the future on top of this implementation.
 
 why?
 ----
 
 wanted to get into the klisp implementation and have something useful to do.
 
-also zeromq is really cool and would allow me to do interesting stuff in the
+also zeromq is really cool and will allow me to do interesting stuff in the
 language when implemented.
 
 who?
 ----
 
 me, marianoguerra.
+
+how?
+----
+
+first you need to have compiler, make and related tools
+also you need the zeromq libs installed with the development files
+
+in a debian based system this would be achieved with this command::
+
+  sudo apt-get install build-essential libzmq libzmq-dev
+
+after that do the following:
+
+* put this repo inside klisp/src
+* cd to it
+* make
+* ../klisp klisp-zmq.k
 
 status?
 -------
