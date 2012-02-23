@@ -1,0 +1,73 @@
+klisp-zmq
+=========
+
+what?
+-----
+
+klisp-zmq are bindings for zeromq on the klisp implementation of the kernel
+programming language.
+
+the bindings are really low level and the idea is to map almost directly to
+the C API. 
+
+A higher level api may come on the future on top of this implementation.
+
+why?
+----
+
+wanted to get into the klisp implementation and have something useful to do.
+
+also zeromq is really cool and would allow me to do interesting stuff in the
+language when implemented.
+
+who?
+----
+
+me, marianoguerra.
+
+status?
+-------
+
+* items marked with an *x* are already implemented
+* items marked with a *-* will be implemented by a higher level function (higher
+in the sense that they won't be mapped one to one to functions in the klisp-zmq
+API)
+* items marked with a *t* are missing
+
+::
+
+  x   zmq_version - report 0MQ library version
+  x   zmq_init - initialise 0MQ context
+  x   zmq_term - terminate 0MQ context
+  x   zmq_socket - create 0MQ socket
+  x   zmq_close - close 0MQ socket
+  x   zmq_bind - accept connections on a socket
+  x   zmq_connect - connect a socket
+  x   zmq_errno - retrieve value of errno for the calling thread
+  x   zmq_strerror - get 0MQ error message string
+  t   zmq_send - send a message on a socket
+  t   zmq_recv - receive a message from a socket
+  t   zmq_getsockopt - get 0MQ socket options
+  t   zmq_setsockopt - set 0MQ socket options
+  t   zmq_poll - input/output multiplexing
+  t   zmq_device - start built-in 0MQ device
+  -   zmq_msg_close - release 0MQ message
+  -   zmq_msg_copy - copy content of a message to another message
+  -   zmq_msg_data - retrieve pointer to message content
+  -   zmq_msg_init_data - initialise 0MQ message from a supplied buffer
+  -   zmq_msg_init_size - initialise 0MQ message of a specified size
+  -   zmq_msg_init - initialise empty 0MQ message
+  -   zmq_msg_move - move content of a message to another message
+  -   zmq_msg_size - retrieve message content size in bytes
+
+resources
+---------
+
+* klisp: http://klisp.org
+* zeromq: http://zeromq.org
+* kernel programming language: http://web.cs.wpi.edu/~jshutt/kernel.html
+
+license
+-------
+
+BSD (you can invite me a beer if you want :)
