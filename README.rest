@@ -67,7 +67,7 @@ API)
   t   zmq_getsockopt - get 0MQ socket options
   t   zmq_setsockopt - set 0MQ socket options
   t   zmq_poll - input/output multiplexing
-  t   zmq_device - start built-in 0MQ device
+  x   zmq_device - start built-in 0MQ device
   -   zmq_msg_close - release 0MQ message
   -   zmq_msg_copy - copy content of a message to another message
   -   zmq_msg_data - retrieve pointer to message content
