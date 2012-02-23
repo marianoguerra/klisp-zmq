@@ -6,6 +6,7 @@ def main():
     subscriber.bind("tcp://127.0.0.1:5555")
 
     while True:
+        print()
         print("waiting for data")
         data = subscriber.recv()
         print("got data")
