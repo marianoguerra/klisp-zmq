@@ -62,8 +62,8 @@ API)
   x   zmq_connect - connect a socket
   x   zmq_errno - retrieve value of errno for the calling thread
   x   zmq_strerror - get 0MQ error message string
-  t   zmq_send - send a message on a socket
-  t   zmq_recv - receive a message from a socket
+  x   zmq_send - send a message on a socket
+  x   zmq_recv - receive a message from a socket
   t   zmq_getsockopt - get 0MQ socket options
   t   zmq_setsockopt - set 0MQ socket options
   t   zmq_poll - input/output multiplexing
