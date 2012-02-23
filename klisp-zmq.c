@@ -1,8 +1,7 @@
 /*
-** ffi-signal.c
+** klisp-zmq.c
 **
-** Example of interpreter extension. Please follow instructions
-** in ffi-signal.k.
+** zeromq bindings for klisp
 **
 */
 
