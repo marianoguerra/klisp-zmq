@@ -15,6 +15,7 @@
 #include "kstate.h"
 #include "kstring.h"
 #include "kinteger.h"
+#include "kbytevector.h"
 #include "kpair.h"
 #include "kport.h"
 #include "kwrite.h"
@@ -163,6 +164,35 @@ static void klisp_zmq_bind(klisp_State *K)
 	kapply_cc(K, i2tv(result));
 }
 
+static void klisp_zmq_send(klisp_State *K)
+{
+	void *socket;
+	uint8_t *data;
+	uint32_t size;
+	int flags;
+	zmq_msg_t msg;
+
+	bind_3tp(K, K->next_value,
+			"user pointer", ttisuser, v_socket,
+			"byte vector", ttisbytevector, v_bytevector,
+			"exact integer", ttisfixint, v_flags);
+
+	if (ttisfixint(v_flags)) {
+		socket = pvalue(v_socket);
+		data = kbytevector_buf(v_bytevector);
+		size = kbytevector_size(v_bytevector);
+		flags = ivalue(v_flags);
+
+		int init_data_result = zmq_msg_init_data(&msg, (void *)data, size, NULL, NULL);
+		int result = zmq_send(socket, &msg, flags);
+		int close_result = zmq_msg_close(&msg);
+
+		kapply_cc(K, i2tv(result));
+	} else {
+        klispE_throw_simple_with_irritants(K, "expected fixint for flags parameter", 1, v_flags);
+	}
+}
+
 static void safe_add_applicative(klisp_State *K, TValue env,
                                  const char *name,
                                  klisp_CFunction fn)
@@ -187,6 +217,7 @@ void klisp_zmq_init_lib(klisp_State *K)
     safe_add_applicative(K, K->next_env, "zmq-close", klisp_zmq_close);
     safe_add_applicative(K, K->next_env, "zmq-connect", klisp_zmq_connect);
     safe_add_applicative(K, K->next_env, "zmq-bind", klisp_zmq_bind);
+    safe_add_applicative(K, K->next_env, "zmq-send", klisp_zmq_send);
     klisp_assert(K->rooted_tvs_top == 0);
     klisp_assert(K->rooted_vars_top == 0);
 }
