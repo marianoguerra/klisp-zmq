@@ -88,7 +88,11 @@
 (display "zmq version: ")
 (display (zmq-version))
 (newline)
-($let* ((ctx (zmq-init 2)) (socket (zmq-socket ctx ZMQ-REQ)))
+($let* (
+    (ctx (zmq-init 2))
+    (socket (zmq-socket ctx ZMQ-REQ))
+    (message (string->bytevector "hello")))
+
   ($sequence
     (display "zmq errno: ")
     (display (zmq-errno))
@@ -99,7 +103,7 @@
     (display "connect socket result: ")
     (display (zmq-connect socket "tcp://127.0.0.1:5555"))
     (newline)
-    (display (zmq-send socket (string->bytevector "hello") ZMQ-NOBLOCK))
+    (display (zmq-send socket message ZMQ-NOBLOCK))
     (newline)
     (read-line)
     (display "close socket result: ")
