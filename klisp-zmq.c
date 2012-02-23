@@ -225,6 +225,30 @@ static void klisp_zmq_recv(klisp_State *K)
 	}
 }
 
+static void klisp_zmq_device(klisp_State *K)
+{
+	int device;
+	void *frontend, *backend;
+
+	bind_3tp(K, K->next_value,
+			"exact integer", ttisfixint, v_device,
+			"user pointer", ttisuser, v_frontend,
+			"user pointer", ttisuser, v_backend);
+
+	if (ttisfixint(v_device)) {
+		frontend = pvalue(v_frontend);
+		backend = pvalue(v_backend);
+		device = ivalue(v_device);
+
+		int result = zmq_device(device, frontend, backend);
+
+		kapply_cc(K, i2tv(result));
+	} else {
+		klispE_throw_simple_with_irritants(K, "expected fixint for device parameter", 1, v_device);
+	}
+}
+
+
 static void safe_add_applicative(klisp_State *K, TValue env,
 		const char *name,
 		klisp_CFunction fn)
@@ -251,6 +275,7 @@ void klisp_zmq_init_lib(klisp_State *K)
 	safe_add_applicative(K, K->next_env, "zmq-bind", klisp_zmq_bind);
 	safe_add_applicative(K, K->next_env, "zmq-send", klisp_zmq_send);
 	safe_add_applicative(K, K->next_env, "zmq-recv", klisp_zmq_recv);
+	safe_add_applicative(K, K->next_env, "zmq-device", klisp_zmq_device);
 	klisp_assert(K->rooted_tvs_top == 0);
 	klisp_assert(K->rooted_vars_top == 0);
 }
