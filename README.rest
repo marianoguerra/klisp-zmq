@@ -46,9 +46,7 @@ status?
 -------
 
 * items marked with an *x* are already implemented
-* items marked with a *-* will be implemented by a higher level function (higher
-in the sense that they won't be mapped one to one to functions in the klisp-zmq
-API)
+* items marked with a *-* will be implemented by a higher level function (higher in the sense that they won't be mapped one to one to functions in the klisp-zmq API)
 * items marked with a *t* are missing
 
 ::
