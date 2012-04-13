@@ -5,12 +5,13 @@
 ;;    .../src$ make posix USE_LIBFFI=1
 ;;           $ cd examples
 ;;           $ make
-;;           $ ../klisp klisp-zmq.k
+;;           $ ../klisp klisp-zmq-demo.k
 ;;
 ;; files:
 ;;  klisp-zmq.so ......... interpreter extension compiled to a DLL
-;;  klisp-zmq.k .......... example of client code
+;;  klisp-zmq.k .......... library code
 ;;  klisp-zmq.c  ......... C source of the extension
+;;  klisp-zmq-demo.k ..... example of client code
 ;;  Makefile ............. build script
 ;;
 
