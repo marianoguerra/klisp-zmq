@@ -93,6 +93,7 @@ resources
 * klisp: http://klisp.org
 * zeromq: http://zeromq.org
 * kernel programming language: http://web.cs.wpi.edu/~jshutt/kernel.html
+* klisp/kernel mailing list: http://groups.google.com/group/klisp/
 
 license
 -------
