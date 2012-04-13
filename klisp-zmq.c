@@ -49,17 +49,13 @@ void display(klisp_State *K, TValue value)
 static void klisp_zmq_init(klisp_State *K)
 {
 	int io_threads;
-	bind_1tp(K, K->next_value, "exact integer", ttiseinteger, v_io_threads);
+	bind_1tp(K, K->next_value, "fixint", ttisfixint, v_io_threads);
 
-	if (ttisfixint(v_io_threads)) {
-		io_threads = ivalue(v_io_threads);
+	io_threads = ivalue(v_io_threads);
 
-		void *ctx = zmq_init(io_threads);
+	void *ctx = zmq_init(io_threads);
 
-		kapply_cc(K, p2tv(ctx));
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for iothreads parameter", 1, v_io_threads);
-	}
+	kapply_cc(K, p2tv(ctx));
 }
 
 static void klisp_zmq_term(klisp_State *K)
@@ -82,18 +78,14 @@ static void klisp_zmq_errno(klisp_State *K)
 
 static void klisp_zmq_strerror(klisp_State *K)
 {
-	bind_1tp(K, K->next_value, "exact integer", ttiseinteger, v_errnum);
+	bind_1tp(K, K->next_value, "fixint", ttisfixint, v_errnum);
 
-	if (ttisfixint(v_errnum)) {
-		int errnum = ivalue(v_errnum);
-		// XXX: should I free msg? (zmq question)
-		const char *msg = zmq_strerror(errnum);
-		TValue v_msg = kstring_new_b_imm(K, msg);
+	int errnum = ivalue(v_errnum);
+	// XXX: should I free msg? (zmq question)
+	const char *msg = zmq_strerror(errnum);
+	TValue v_msg = kstring_new_b_imm(K, msg);
 
-		kapply_cc(K, v_msg);
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for errnum parameter", 1, v_errnum);
-	}
+	kapply_cc(K, v_msg);
 }
 
 static void klisp_zmq_socket(klisp_State *K)
@@ -103,18 +95,14 @@ static void klisp_zmq_socket(klisp_State *K)
 
 	bind_2tp(K, K->next_value,
 			"user pointer", ttisuser, v_ctx,
-			"exact integer", ttiseinteger, v_type);
+			"fixint", ttisfixint, v_type);
 
-	if (ttisfixint(v_type)) {
-		type = ivalue(v_type);
-		ctx  = pvalue(v_ctx);
+	type = ivalue(v_type);
+	ctx  = pvalue(v_ctx);
 
-		socket = zmq_socket(ctx, type);
+	socket = zmq_socket(ctx, type);
 
-		kapply_cc(K, p2tv(socket));
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for type parameter", 1, v_type);
-	}
+	kapply_cc(K, p2tv(socket));
 }
 
 static void klisp_zmq_close(klisp_State *K)
@@ -174,22 +162,18 @@ static void klisp_zmq_send(klisp_State *K)
 	bind_3tp(K, K->next_value,
 			"user pointer", ttisuser, v_socket,
 			"byte vector", ttisbytevector, v_bytevector,
-			"exact integer", ttisfixint, v_flags);
+			"fixint", ttisfixint, v_flags);
 
-	if (ttisfixint(v_flags)) {
-		socket = pvalue(v_socket);
-		data = kbytevector_buf(v_bytevector);
-		size = kbytevector_size(v_bytevector);
-		flags = ivalue(v_flags);
+	socket = pvalue(v_socket);
+	data = kbytevector_buf(v_bytevector);
+	size = kbytevector_size(v_bytevector);
+	flags = ivalue(v_flags);
 
-		int init_data_result = zmq_msg_init_data(&msg, (void *)data, size, NULL, NULL);
-		int result = zmq_send(socket, &msg, flags);
-		int close_result = zmq_msg_close(&msg);
+	int init_data_result = zmq_msg_init_data(&msg, (void *)data, size, NULL, NULL);
+	int result = zmq_send(socket, &msg, flags);
+	int close_result = zmq_msg_close(&msg);
 
-		kapply_cc(K, i2tv(result));
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for flags parameter", 1, v_flags);
-	}
+	kapply_cc(K, i2tv(result));
 }
 
 static void klisp_zmq_recv(klisp_State *K)
@@ -203,26 +187,22 @@ static void klisp_zmq_recv(klisp_State *K)
 
 	bind_2tp(K, K->next_value,
 			"user pointer", ttisuser, v_socket,
-			"exact integer", ttisfixint, v_flags);
+			"fixint", ttisfixint, v_flags);
 
-	if (ttisfixint(v_flags)) {
-		socket = pvalue(v_socket);
-		flags = ivalue(v_flags);
+	socket = pvalue(v_socket);
+	flags = ivalue(v_flags);
 
-		int init_data_result = zmq_msg_init(&msg);
-		int result = zmq_recv(socket, &msg, flags);
+	int init_data_result = zmq_msg_init(&msg);
+	int result = zmq_recv(socket, &msg, flags);
 
-		data = zmq_msg_data(&msg);
-		size = zmq_msg_size(&msg);
+	data = zmq_msg_data(&msg);
+	size = zmq_msg_size(&msg);
 
-		v_data = kbytevector_new_bs_imm(K, data, size);
+	v_data = kbytevector_new_bs_imm(K, data, size);
 
-		int close_result = zmq_msg_close(&msg);
+	int close_result = zmq_msg_close(&msg);
 
-		kapply_cc(K, v_data);
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for flags parameter", 1, v_flags);
-	}
+	kapply_cc(K, v_data);
 }
 
 static void klisp_zmq_device(klisp_State *K)
@@ -231,23 +211,89 @@ static void klisp_zmq_device(klisp_State *K)
 	void *frontend, *backend;
 
 	bind_3tp(K, K->next_value,
-			"exact integer", ttisfixint, v_device,
+			"fixint", ttisfixint, v_device,
 			"user pointer", ttisuser, v_frontend,
 			"user pointer", ttisuser, v_backend);
 
-	if (ttisfixint(v_device)) {
-		frontend = pvalue(v_frontend);
-		backend = pvalue(v_backend);
-		device = ivalue(v_device);
+	frontend = pvalue(v_frontend);
+	backend = pvalue(v_backend);
+	device = ivalue(v_device);
 
-		int result = zmq_device(device, frontend, backend);
+	int result = zmq_device(device, frontend, backend);
 
-		kapply_cc(K, i2tv(result));
-	} else {
-		klispE_throw_simple_with_irritants(K, "expected fixint for device parameter", 1, v_device);
-	}
+	kapply_cc(K, i2tv(result));
 }
 
+int get_list_size(TValue list) {
+	int size = 0;
+	TValue current = list;
+
+	while (ttispair(current)) {
+		size += 1;
+		current = kcdr(current);
+	}
+
+	return size;
+}
+
+void get_user_pointer_list(TValue list, void **pointers, int *nitems, bool *error) {
+	int count = 0, size = get_list_size(list);
+	pointers = (void**) malloc(sizeof(void*) * size);
+	TValue current = list, pointer;
+
+	*error = false;
+	*nitems = size;
+
+	while (ttispair(current)) {
+		pointer = kcar(current);
+		current = kcdr(current);
+
+		if (!ttisuser(pointer)) {
+			*error = true;
+			break;
+		}
+
+		pointers[count] = pvalue(pointer);
+		count += 1;
+	}
+
+}
+
+static void klisp_zmq_poll(klisp_State *K)
+{
+	long timeout = 1000;
+	int i, nitems = 1;
+	void **sockets = NULL;
+	bool error = false;
+	zmq_pollitem_t **items;
+
+	bind_2tp(K, K->next_value,
+			"exact integer", ttisexact, v_timeout,
+			"pair", ttispair, v_sockets);
+
+	get_user_pointer_list(v_sockets, sockets, &nitems, &error);
+
+	if (error) {
+		klispE_throw_simple_with_irritants(K, "expected list of sockets", 1, v_sockets);
+	} else {
+		items = (zmq_pollitem_t**) malloc(sizeof(zmq_pollitem_t*) * nitems);
+
+		for (i = 0; i < nitems; i++) {
+			items[i] = (zmq_pollitem_t*) malloc(sizeof(zmq_pollitem_t));
+			items[i]->socket = sockets[i];
+			// TODO allow to set it by the user
+			items[i]->events = ZMQ_POLLIN | ZMQ_POLLOUT;
+		}
+
+		zmq_poll(*items, nitems, timeout);
+		free(items);
+
+		// TODO return list of pairs (socket result)
+		kapply_cc(K, i2tv(0));
+	}
+
+	free(sockets);
+}
 
 static void safe_add_applicative(klisp_State *K, TValue env,
 		const char *name,
@@ -264,18 +310,19 @@ static void safe_add_applicative(klisp_State *K, TValue env,
 
 void klisp_zmq_init_lib(klisp_State *K)
 {
-	safe_add_applicative(K, K->next_env, "zmq-version", klisp_zmq_version);
-	safe_add_applicative(K, K->next_env, "zmq-init", klisp_zmq_init);
-	safe_add_applicative(K, K->next_env, "zmq-term", klisp_zmq_term);
-	safe_add_applicative(K, K->next_env, "zmq-errno", klisp_zmq_errno);
-	safe_add_applicative(K, K->next_env, "zmq-str-error", klisp_zmq_strerror);
-	safe_add_applicative(K, K->next_env, "zmq-socket", klisp_zmq_socket);
-	safe_add_applicative(K, K->next_env, "zmq-close", klisp_zmq_close);
-	safe_add_applicative(K, K->next_env, "zmq-connect", klisp_zmq_connect);
-	safe_add_applicative(K, K->next_env, "zmq-bind", klisp_zmq_bind);
-	safe_add_applicative(K, K->next_env, "zmq-send", klisp_zmq_send);
-	safe_add_applicative(K, K->next_env, "zmq-recv", klisp_zmq_recv);
-	safe_add_applicative(K, K->next_env, "zmq-device", klisp_zmq_device);
+	safe_add_applicative(K, K->next_env, "version", klisp_zmq_version);
+	safe_add_applicative(K, K->next_env, "init", klisp_zmq_init);
+	safe_add_applicative(K, K->next_env, "term", klisp_zmq_term);
+	safe_add_applicative(K, K->next_env, "errno", klisp_zmq_errno);
+	safe_add_applicative(K, K->next_env, "str-error", klisp_zmq_strerror);
+	safe_add_applicative(K, K->next_env, "socket", klisp_zmq_socket);
+	safe_add_applicative(K, K->next_env, "close", klisp_zmq_close);
+	safe_add_applicative(K, K->next_env, "connect", klisp_zmq_connect);
+	safe_add_applicative(K, K->next_env, "bind", klisp_zmq_bind);
+	safe_add_applicative(K, K->next_env, "send", klisp_zmq_send);
+	safe_add_applicative(K, K->next_env, "recv", klisp_zmq_recv);
+	safe_add_applicative(K, K->next_env, "device", klisp_zmq_device);
+	safe_add_applicative(K, K->next_env, "poll", klisp_zmq_poll);
 	klisp_assert(K->rooted_tvs_top == 0);
 	klisp_assert(K->rooted_vars_top == 0);
 }
