@@ -44,6 +44,16 @@ after that do the following:
 
 see klisp-zmq-demo.k for some usage examples
 
+for the demo to do something useful you will need echo.py running, echo.py
+is a python3 program that will listen and reply what it receives, install
+python3, python3's zmq bindings and do::
+
+  python3 echo.py
+
+and then run::
+
+  klisp klisp-zmq-demo.k
+
 status?
 -------
 
