@@ -40,7 +40,9 @@ after that do the following:
 * put this repo inside klisp/src
 * cd to it
 * make
-* ../klisp klisp-zmq.k
+* ../klisp klisp-zmq-demo.k
+
+see klisp-zmq-demo.k for some usage examples
 
 status?
 -------
